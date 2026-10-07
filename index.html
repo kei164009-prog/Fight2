@@ -1,0 +1,2340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Photo Fight: 100 Beasts Unique Skills Smash</title>
+  <style>
+    :root {
+      --bg-white: #ffffff;
+      --bg-subtle: #f5f6f8;
+      --border-black: #111111;
+      --border-light: #d6d9e0;
+      --text-black: #111111;
+      --text-muted: #666666;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-subtle);
+      color: var(--text-black);
+      font-family: var(--font-family);
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .btn {
+      background: var(--bg-white);
+      border: 2px solid var(--border-black);
+      color: var(--text-black);
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      text-transform: uppercase;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      background: var(--border-black);
+      color: var(--bg-white);
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: var(--border-black);
+      color: var(--bg-white);
+    }
+
+    .btn-danger:active {
+      background: #000;
+      color: #fff;
+    }
+
+    .view-container {
+      width: 100%;
+      max-width: 1200px;
+      min-height: 100vh;
+      padding: 8px 6px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+    }
+
+    .active-view {
+      display: flex;
+    }
+
+    #game-view.active-view {
+      height: 100vh;
+      min-height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+      justify-content: space-between;
+      touch-action: none;
+    }
+
+    /* ホーム画面 */
+    #home-view {
+      text-align: center;
+      max-width: 480px;
+      padding: 24px 16px 40px 16px;
+    }
+
+    .logo-container { margin-bottom: 14px; }
+    .logo-main {
+      font-size: clamp(34px, 8vw, 54px);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: var(--border-black);
+      line-height: 1.1;
+    }
+    .logo-sub {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.25em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .home-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .home-menu .btn {
+      padding: 13px;
+      font-size: 13px;
+      width: 100%;
+    }
+
+    .coin-display {
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 12px;
+      border: 2px solid var(--border-black);
+      background: #fff;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .cpu-setting-box {
+      width: 100%;
+      background: #fff;
+      border: 2px solid var(--border-black);
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    /* ヘッダー */
+    .top-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-white);
+      border: 2px solid var(--border-black);
+      padding: 3px 6px;
+      margin-bottom: 2px;
+      gap: 4px;
+    }
+
+    .top-bar-left, .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .mode-badge {
+      font-size: 9px;
+      font-weight: 900;
+      color: var(--bg-white);
+      background: var(--border-black);
+      padding: 3px 6px;
+    }
+
+    /* 自由度調整バー */
+    .tune-bar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      background: var(--bg-white);
+      border: 2px solid var(--border-black);
+      border-bottom: none;
+      padding: 3px 6px;
+      gap: 6px;
+      overflow-x: auto;
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .tune-bar label {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      white-space: nowrap;
+    }
+
+    .tune-bar input[type="range"] {
+      width: 55px;
+      accent-color: var(--border-black);
+    }
+
+    /* パレット */
+    .palette-box {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-white);
+      border: 2px solid var(--border-black);
+      border-bottom: none;
+    }
+
+    .palette-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-black);
+      background: #f0f1f4;
+    }
+
+    .palette-tab-btn {
+      flex: 1;
+      padding: 4px 2px;
+      font-size: 9px;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      text-transform: uppercase;
+      border-right: 1px solid var(--border-black);
+    }
+    .palette-tab-btn:last-child { border-right: none; }
+    .palette-tab-btn.active {
+      background: var(--bg-white);
+      color: var(--text-black);
+      font-weight: 900;
+    }
+
+    .palette-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      padding: 3px;
+      overflow-x: auto;
+      gap: 3px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .palette-btn {
+      flex: 0 0 auto;
+      padding: 4px 7px;
+      font-size: 9px;
+      font-weight: 800;
+      background: var(--bg-white);
+      border: 1px solid var(--border-black);
+      color: var(--text-black);
+      cursor: pointer;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .palette-btn.active {
+      background: var(--border-black);
+      color: var(--bg-white);
+    }
+
+    /* キャンバス */
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      max-height: calc(100vh - 180px);
+      aspect-ratio: 2 / 1;
+      background: #ffffff;
+      border: 2px solid var(--border-black);
+      box-shadow: 2px 2px 0px var(--border-black);
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+
+    /* HUD */
+    .battle-hud {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      right: 6px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .smash-card {
+      background: rgba(255, 255, 255, 0.94);
+      border: 2px solid var(--border-black);
+      box-shadow: 2px 2px 0px var(--border-black);
+      padding: 3px 8px;
+      min-width: 105px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .smash-player-title {
+      font-size: 8px;
+      font-weight: 900;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      gap: 4px;
+    }
+
+    .smash-percent {
+      font-size: clamp(18px, 5vw, 28px);
+      font-weight: 900;
+      font-style: italic;
+      color: var(--border-black);
+      line-height: 1;
+      margin: 1px 0;
+    }
+
+    .smash-stocks { display: flex; gap: 3px; }
+    .stock-icon {
+      width: 7px;
+      height: 7px;
+      border: 1px solid var(--border-black);
+      background: var(--border-black);
+      border-radius: 50%;
+    }
+
+    /* ==========================================================================
+       ★外枠完全固定 ＆ 内側黒丸が遠くまで動くジョイスティック
+       ========================================================================== */
+    .virtual-gamepad {
+      width: 100%;
+      height: 114px;
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2px 14px;
+      background: var(--bg-white);
+      border: 2px solid var(--border-black);
+      margin-top: 2px;
+      touch-action: none;
+      position: relative;
+    }
+
+    /* 左側操作ゾーン（定位置に外枠固定） */
+    .stick-touch-zone {
+      width: 48%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 10px;
+      touch-action: none;
+      cursor: pointer;
+    }
+
+    /* 外側の丸（定位置固定） */
+    .fixed-stick-base {
+      width: 84px;
+      height: 84px;
+      border: 2px solid var(--border-black);
+      background: #f7f8fa;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      box-shadow: inset 1px 1px 4px rgba(0,0,0,0.06);
+    }
+    .fixed-stick-base::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: rgba(0,0,0,0.08);
+    }
+    .fixed-stick-base::before {
+      content: '';
+      position: absolute;
+      width: 1px;
+      height: 100%;
+      background: rgba(0,0,0,0.08);
+    }
+
+    /* 内側の黒丸（★ベースを飛び出してかなり遠くまで動く！） */
+    .fixed-stick-knob {
+      width: 38px;
+      height: 38px;
+      background: var(--border-black);
+      border-radius: 50%;
+      position: absolute;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+      pointer-events: none;
+      transform: translate(0px, 0px);
+      transition: transform 0.05s ease-out; /* 即座に戻る */
+      z-index: 2;
+    }
+    .fixed-stick-knob::after {
+      content: '';
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 50%;
+      display: block;
+      margin: 10px auto;
+    }
+
+    /* 右側：4スロット技対応クラスター */
+    .ergo-cluster {
+      width: 48%;
+      height: 100%;
+      position: relative;
+      touch-action: none;
+    }
+
+    .ergo-btn {
+      position: absolute;
+      border: 2px solid var(--border-black);
+      color: var(--text-black);
+      font-weight: 900;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 0px var(--border-black);
+      cursor: pointer;
+      background: var(--bg-white);
+      touch-action: none;
+    }
+
+    .ergo-btn:active, .ergo-btn.pressed {
+      background: var(--border-black) !important;
+      color: var(--bg-white) !important;
+      transform: translate(1px, 1px);
+      box-shadow: none;
+    }
+
+    .btn-ergo-atk { width: 44px; height: 44px; font-size: 10px; background: var(--border-black); color: #fff; right: 46px; top: 32px; z-index: 2; }
+    .btn-ergo-jump { width: 38px; height: 38px; font-size: 9px; background: #ededed; right: 49px; top: -10px; }
+    .btn-ergo-sp1 { width: 36px; height: 36px; font-size: 8px; background: #fafafa; right: 98px; top: 12px; }
+    .btn-ergo-sp2 { width: 36px; height: 36px; font-size: 8px; background: #fafafa; right: 98px; top: 54px; }
+    .btn-ergo-skill { width: 36px; height: 36px; font-size: 7px; background: #f0f0f0; right: -2px; top: 12px; }
+    .btn-ergo-shield { width: 36px; height: 36px; font-size: 7px; background: #fafafa; right: -2px; top: 54px; }
+
+    /* ストア・ガチャ・コレクション */
+    .store-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 6px;
+      padding: 6px;
+      border: 2px solid var(--border-black);
+      background: #fff;
+    }
+
+    .store-card {
+      border: 1px solid var(--border-black);
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 4px;
+      background: var(--bg-subtle);
+    }
+
+    .store-card.equipped { border: 2px solid var(--border-black); background: #eef2ff; }
+    .store-card.limited { border: 2px solid var(--border-black); background: #fff9e6; }
+    .store-item-title { font-size: 11px; font-weight: 900; }
+    .store-item-desc { font-size: 8px; color: var(--text-muted); line-height: 1.2; }
+
+    .gacha-banner {
+      width: 100%;
+      background: #fff;
+      border: 2px solid var(--border-black);
+      padding: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .gacha-btn-group { display: flex; gap: 10px; }
+
+    /* モーダル */
+    .modal-overlay {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      background: rgba(17, 17, 17, 0.72) !important;
+      display: none;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 10000 !important;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      background: var(--bg-white);
+      border: 2px solid var(--border-black);
+      box-shadow: 6px 6px 0px var(--border-black);
+      width: 90%;
+      max-width: 380px;
+      padding: 20px;
+      margin: auto;
+    }
+
+    .modal-title { font-size: 14px; font-weight: 800; margin-bottom: 12px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 10px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
+    .form-group input { width: 100%; background: var(--bg-white); border: 2px solid var(--border-black); padding: 8px; font-size: 13px; outline: none; }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+    .toast {
+      position: fixed; bottom: 14px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--border-black); color: var(--bg-white);
+      padding: 6px 14px; font-size: 10px; font-weight: 800;
+      z-index: 20000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .toast.show { opacity: 1; }
+
+    .result-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.94);
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; z-index: 20;
+    }
+    .result-text { font-size: 30px; font-weight: 900; letter-spacing: 0.15em; font-style: italic; }
+  </style>
+</head>
+<body>
+
+  <div id="toast" class="toast">NOTIFICATION</div>
+
+  <!-- 1. ホーム画面（縦スクロール対応） -->
+  <div id="home-view" class="view-container active-view">
+    <div class="logo-container">
+      <div class="logo-main">PHOTO FIGHT</div>
+      <div class="logo-sub">100 BEASTS UNIQUE SKILLS SMASH</div>
+    </div>
+
+    <div class="coin-display">所持コイン: <span id="home-coins">1000</span> G</div>
+
+    <div class="cpu-setting-box">
+      <span style="font-size: 11px; font-weight: 900;">CPUの強さ:</span>
+      <button class="btn btn-primary" id="btn-toggle-cpu-level">HARD (LV.3)</button>
+    </div>
+
+    <div class="home-menu">
+      <button class="btn btn-primary" id="btn-goto-editor">新しくコースを作る</button>
+      <button class="btn btn-primary" id="btn-goto-gacha">動物ガチャ（GACHA）</button>
+      <button class="btn" id="btn-goto-store">技ストア（100 SKILLS）</button>
+      <button class="btn" id="btn-goto-beasts">所持ビースト編成</button>
+      <button class="btn" id="btn-goto-world">世界のコースで遊ぶ</button>
+      <button class="btn" id="btn-goto-mypage">マイページ</button>
+    </div>
+  </div>
+
+  <!-- 2. 編集・ゲーム画面 -->
+  <div id="game-view" class="view-container">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <button class="btn" id="btn-back-home">&lt; HOME</button>
+        <span class="mode-badge" id="current-mode-label">EDITOR</span>
+        <button class="btn" id="btn-game-cpu-toggle">CPU: HARD</button>
+      </div>
+
+      <div class="top-bar-right" id="editor-controls">
+        <input type="file" id="photo-upload" accept="image/*" style="display: none;">
+        <button class="btn btn-primary" id="btn-trigger-upload">写真解析</button>
+        <button class="btn btn-primary" id="btn-quick-dig" style="background:#ff3344; color:#fff; border-color:#111;">落ちる穴を掘る</button>
+        <button class="btn btn-primary" id="btn-start-battle">バトル開始</button>
+        <button class="btn" id="btn-open-save-modal">コース保存</button>
+      </div>
+
+      <div class="top-bar-right" id="battle-controls" style="display: none;">
+        <button class="btn" id="btn-restart-battle">リトライ</button>
+        <button class="btn" id="btn-return-edit">編集に戻る</button>
+      </div>
+    </div>
+
+    <!-- 自由度調整バー -->
+    <div class="tune-bar" id="editor-tune-bar">
+      <label>凸凹感度 <input type="range" id="tune-threshold" min="30" max="90" value="55"></label>
+      <label>浮島密度 <input type="range" id="tune-islands" min="0" max="10" value="5"></label>
+      <button class="btn" id="btn-invert-terrain">明暗反転</button>
+      <button class="btn btn-danger" id="btn-clear-terrain">平坦リセット</button>
+    </div>
+
+    <!-- 4カテゴリ整理パレット -->
+    <div class="palette-box" id="editor-palette-box">
+      <div class="palette-tabs">
+        <button class="palette-tab-btn active" data-cat="terrain">地形・穴</button>
+        <button class="palette-tab-btn" data-cat="gimmick">ギミック</button>
+        <button class="palette-tab-btn" data-cat="trap">トラップ</button>
+        <button class="palette-tab-btn" data-cat="item">アイテム他</button>
+      </div>
+      <div class="palette-container" id="editor-palette-bar"></div>
+    </div>
+
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="1200" height="600"></canvas>
+
+      <div class="battle-hud" id="battle-hud" style="display: none;">
+        <div class="smash-card">
+          <div class="smash-player-title">
+            <span id="hud-p1-name">YOU</span>
+            <div class="smash-stocks" id="p1-stocks-box"></div>
+          </div>
+          <div class="smash-percent" id="p1-percent">0%</div>
+        </div>
+
+        <div class="smash-card">
+          <div class="smash-player-title">
+            <span id="hud-p2-name">CPU (HARD)</span>
+            <div class="smash-stocks" id="p2-stocks-box"></div>
+          </div>
+          <div class="smash-percent" id="p2-percent">0%</div>
+        </div>
+      </div>
+
+      <div class="result-overlay" id="result-overlay">
+        <div class="result-text" id="result-title">GAME SET</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;" id="result-desc">PLAYER 1 VICTORY</div>
+        <button class="btn btn-primary" id="btn-result-action">もう一度対戦</button>
+      </div>
+    </div>
+
+    <!-- ★外枠固定＆内側黒丸が遠くまで動くジョイスティック -->
+    <div class="virtual-gamepad" id="virtual-gamepad">
+      <!-- 左側操作ゾーン -->
+      <div class="stick-touch-zone" id="stick-touch-zone">
+        <div class="fixed-stick-base" id="fixed-stick-base">
+          <div class="fixed-stick-knob" id="fixed-stick-knob"></div>
+        </div>
+      </div>
+
+      <!-- 右側4スロット技対応クラスター -->
+      <div class="ergo-cluster">
+        <button class="ergo-btn btn-ergo-jump" id="btn-ergo-jump">JUMP</button>
+        <button class="ergo-btn btn-ergo-atk" id="btn-ergo-atk">ATK</button>
+        <button class="ergo-btn btn-ergo-sp1" id="btn-ergo-sp1">SP1</button>
+        <button class="ergo-btn btn-ergo-sp2" id="btn-ergo-sp2">SP2</button>
+        <button class="ergo-btn btn-ergo-skill" id="btn-ergo-skill">SKILL</button>
+        <button class="ergo-btn btn-ergo-shield" id="btn-ergo-shield">GUARD</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 動物ガチャ画面 -->
+  <div id="gacha-view" class="view-container">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <button class="btn" id="btn-gacha-back-home">&lt; HOME</button>
+        <span class="mode-badge">BEAST GACHA</span>
+      </div>
+      <div class="top-bar-right">
+        <span style="font-size: 11px; font-weight: 900;">所持: <strong id="gacha-coins">1000</strong> G</span>
+      </div>
+    </div>
+
+    <div class="palette-tabs" style="width:100%; border:2px solid var(--border-black); border-bottom:none;">
+      <button class="palette-tab-btn active" id="tab-gacha-standard">通常ガチャ</button>
+      <button class="palette-tab-btn" id="tab-gacha-limited">期間限定神獣ガチャ</button>
+    </div>
+
+    <div class="gacha-banner">
+      <div style="font-size:15px; font-weight:900;" id="gacha-banner-title">STANDARD BEAST GACHA</div>
+      <div style="font-size:10px; color:var(--text-muted);" id="gacha-banner-sub">100種類の動物ファイターがランダム排出！</div>
+      <div class="gacha-btn-group">
+        <button class="btn btn-primary" id="btn-gacha-single">1回引く (100 G)</button>
+        <button class="btn btn-primary" id="btn-gacha-multi">10連引く (900 G)</button>
+      </div>
+    </div>
+
+    <div style="font-size:11px; font-weight:800; width:100%; margin:4px 0;">排出結果 / 最新獲得ビースト:</div>
+    <div class="store-grid" id="gacha-result-grid"></div>
+  </div>
+
+  <!-- 4. 技ストア画面 -->
+  <div id="store-view" class="view-container">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <button class="btn" id="btn-store-back-home">&lt; HOME</button>
+        <span class="mode-badge">100 SKILLS STORE</span>
+      </div>
+      <div class="top-bar-right">
+        <span style="font-size: 11px; font-weight: 900;">所持: <strong id="store-coins">1000</strong> G</span>
+      </div>
+    </div>
+    <div class="store-grid" id="skills-store-grid"></div>
+  </div>
+
+  <!-- 5. 所持キャラ編成画面 -->
+  <div id="beasts-view" class="view-container">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <button class="btn" id="btn-beasts-back-home">&lt; HOME</button>
+        <span class="mode-badge">MY BEASTS</span>
+      </div>
+      <div class="top-bar-right">
+        <span style="font-size: 10px; font-weight: 800;">出撃中: <strong id="current-beast-type">LION</strong></span>
+      </div>
+    </div>
+    <div class="store-grid" id="beasts-grid"></div>
+  </div>
+
+  <!-- 6. 世界のコース画面 -->
+  <div id="world-view" class="view-container">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <button class="btn" id="btn-world-back-home">&lt; HOME</button>
+        <span class="mode-badge">WORLD ARCHIVE</span>
+      </div>
+      <div class="top-bar-right"><button class="btn" id="btn-refresh-world">更新</button></div>
+    </div>
+    <div class="store-grid" id="world-course-list"></div>
+  </div>
+
+  <!-- 7. マイページ画面 -->
+  <div id="mypage-view" class="view-container">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <button class="btn" id="btn-mypage-back-home">&lt; HOME</button>
+        <span class="mode-badge">MY PAGE</span>
+      </div>
+    </div>
+    <div class="store-grid" id="my-course-list"></div>
+  </div>
+
+  <!-- コース保存モーダル -->
+  <div class="modal-overlay" id="save-modal">
+    <div class="modal-content">
+      <div class="modal-title">コースを保存して共有</div>
+      <div class="form-group">
+        <label>コースタイトル</label>
+        <input type="text" id="save-title" maxlength="28" placeholder="例: 摩天楼スマッシュ">
+      </div>
+      <div class="form-group">
+        <label>作者ネーム</label>
+        <input type="text" id="save-author" maxlength="20" placeholder="例: PLAYER_1">
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="btn-cancel-save">キャンセル</button>
+        <button class="btn btn-primary" id="btn-confirm-save">スプレッドシートへ保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       1. 基本設定 & 定数
+       ========================================================================== */
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwodWFSSUmZAr8gclTs8uiAS-F_LJy5leBvHcVE6NdDJpeVDNwU2tdxOmwQFigBlmNWXg/exec";
+
+    const CANVAS_WIDTH = 1200;
+    const CANVAS_HEIGHT = 600;
+    const TERRAIN_SEGMENTS = 120;
+    const SEGMENT_WIDTH = CANVAS_WIDTH / TERRAIN_SEGMENTS;
+    const GRID_SIZE = 30;
+    const GRAVITY = 0.55;
+
+    const BLAST_LEFT = -120;
+    const BLAST_RIGHT = CANVAS_WIDTH + 120;
+    const BLAST_TOP = -160;
+    const BLAST_BOTTOM = 660;
+
+    /* ==========================================================================
+       2. カテゴリ別 20種類ギミック
+       ========================================================================== */
+    const OBJECT_CATEGORIES = {
+      terrain: [
+        { id: 'erase_ground', name: '[-] 落ちる穴を掘る' },
+        { id: 'draw_ground', name: '[+] 地面を描く' },
+        { id: 'oneway', name: 'すり抜け床' },
+        { id: 'block', name: '通常ブロック' },
+        { id: 'hard_block', name: '硬質ブロック' },
+        { id: 'cloud', name: '雲ブロック' },
+        { id: 'ice', name: '氷床' },
+        { id: 'pipe', name: '土管' }
+      ],
+      gimmick: [
+        { id: 'question', name: 'ハテナブロック' },
+        { id: 'spring', name: 'ジャンプ台' },
+        { id: 'conveyor_r', name: 'コンベア(右)' },
+        { id: 'conveyor_l', name: 'コンベア(左)' },
+        { id: 'boost', name: 'ダッシュ床' },
+        { id: 'bounce', name: 'バウンド床' },
+        { id: 'lift', name: '移動リフト' }
+      ],
+      trap: [
+        { id: 'spike', name: 'トゲ' },
+        { id: 'cannon', name: '大砲' },
+        { id: 'burner', name: 'バーナー' },
+        { id: 'thwomp', name: 'ドッスン' }
+      ],
+      item: [
+        { id: 'ladder', name: 'ハシゴ' },
+        { id: 'shower', name: 'インク洗浄シャワー' },
+        { id: 'flag', name: 'フラッグ' },
+        { id: 'eraser', name: 'オブジェクト消去' }
+      ]
+    };
+
+    /* ==========================================================================
+       3. 100種類の技（SKILLS）
+       ========================================================================== */
+    const SKILL_TYPES = ['BEAST', 'BIRD', 'AQUA', 'DRAGON', 'INSECT', 'HEAVY', 'AGILE', 'MYTH'];
+    const SKILL_NAMES_PREFIX = ['メガ', 'ギガ', 'オメガ', 'フレア', 'フロスト', 'サンダー', 'シャドウ', 'ソニック', 'ディメンション', 'スパイラル', 'ツイン', 'バウンド', 'クエイク', 'カオス', 'ファントム'];
+    const SKILL_NAMES_CORE = ['インパクト', 'ストライク', 'バレット', 'ビーム', 'トルネード', 'レーザー', 'ブラスター', 'クロー', 'ファング', 'テイル', 'ブロー', 'カッター', 'メテオ', 'バースト', 'マイン', 'ボム', 'パルス', 'キャノン', 'スマッシャー', 'ブリンク'];
+
+    const SKILLS_DATABASE = [];
+    for (let i = 0; i < 100; i++) {
+      const type = SKILL_TYPES[i % SKILL_TYPES.length];
+      const p = SKILL_NAMES_PREFIX[i % SKILL_NAMES_PREFIX.length];
+      const c = SKILL_NAMES_CORE[(i * 3) % SKILL_NAMES_CORE.length];
+      const effectKind = i % 10;
+      let desc = '';
+      switch (effectKind) {
+        case 0: desc = '敵を追尾するホーミング弾を放つ'; break;
+        case 1: desc = '前方に3方向へ拡散するショット'; break;
+        case 2: desc = '地面を揺るがす大衝撃波を放つ'; break;
+        case 3: desc = '直進して貫通する超高速レーザー'; break;
+        case 4: desc = '触れると大爆発する地雷を足元に設置'; break;
+        case 5: desc = '相手を自分のもとへ引き寄せる重力波'; break;
+        case 6: desc = '相手の弾を跳ね返すシールドバースト'; break;
+        case 7: desc = '真下へ叩き落とす超強力メテオストライク'; break;
+        case 8: desc = '敵の背後へ瞬間移動して強襲する'; break;
+        case 9: desc = '高速の連続爪撃で相手を吹き飛ばす'; break;
+      }
+      SKILLS_DATABASE.push({
+        id: i, name: `${p}${c} [${i + 1}]`, type, kind: effectKind, desc,
+        damage: 8 + (i % 8), knockback: 6.2 + (i % 4) * 0.5, price: 100 + (i * 20)
+      });
+    }
+
+    /* ==========================================================================
+       4. ★100種類の動物固有技（SP1・SP2）完全マッピング
+       ========================================================================== */
+    const BEAST_NAMES = [
+      'ライオン', 'オオカミ', 'トラ', 'ヒョウ', 'チーター', 'ジャガー', 'クマ', 'シロクマ', 'パンダ', 'キツネ',
+      'タヌキ', 'イヌ', 'ネコ', 'ウサギ', 'イノシシ', 'シカ', 'バイソン', 'サイ', 'カバ', 'ゾウ',
+      'キリン', 'シマウマ', 'ウマ', 'ラクダ', 'ラャマ', 'ゴリラ', 'チンパンジー', 'サル', 'マントヒヒ', 'コアラ',
+      'カンガルー', 'モグラ', 'ハリネズミ', 'リス', 'ビーバー', 'カワウソ', 'ラッコ', 'アザラシ', 'アシカ', 'セイウチ',
+      'ワシ', 'タカ', 'ハヤブサ', 'フクロウ', 'カラス', 'ツル', 'ペリカン', 'フラミンゴ', 'ペンギン', 'スズメ',
+      'サメ', 'ホオジロザメ', 'シュモクザメ', 'クジラ', 'シャチ', 'イルカ', 'マンタ', 'エイ', 'カジキ', 'ウナギ',
+      'タコ', 'イカ', 'ダイオウイカ', 'カメ', 'ウミガメ', 'ワニ', 'アリゲーター', 'カエル', 'オオサンショウウオ', 'トカゲ',
+      'カブトムシ', 'クワガタ', 'カマキリ', 'サソリ', 'クモ', 'タランチュラ', 'スズメバチ', 'トンボ', 'セミ', 'ムカデ',
+      'ドラゴン', 'ワイバーン', 'ヒドラ', 'フェニックス', 'グリフォン', 'ペガサス', 'ケルベロス', 'キマイラ', 'オロチ', 'ベヒーモス',
+      'リヴァイアサン', 'ウロボロス', 'フェンリル', 'バハムート', 'スフィンクス', 'ガルーダ', 'バジリスク', 'サラマンダー', 'クラーケン', 'ティラノ'
+    ];
+
+    // 100種類それぞれの動物固有技（SP1 / SP2）の定義生成
+    const BEAST_SKILL_TEMPLATES = [
+      { sp1Name: '咆哮衝撃波', sp1Kind: 'roar', sp2Name: 'スーパージャンプクロー', sp2Kind: 'jump_claw' },
+      { sp1Name: 'シャインリフレクト', sp1Kind: 'shine', sp2Name: 'ファイアダッシュ', sp2Kind: 'fire_dash' },
+      { sp1Name: '真空爪牙斬', sp1Kind: 'slash_wave', sp2Name: '昇龍ストライク', sp2Kind: 'shoryu' },
+      { sp1Name: '超高速ダイブロール', sp1Kind: 'roll', sp2Name: 'スパイラルリフト', sp2Kind: 'spiral_lift' },
+      { sp1Name: 'ジャイアントスイング', sp1Kind: 'swing', sp2Name: 'ゴリラコプター', sp2Kind: 'copter' },
+      { sp1Name: 'ヘビーストーン急降下', sp1Kind: 'stone', sp2Name: 'クエイクバースト', sp2Kind: 'quake_jump' },
+      { sp1Name: 'フリッパー水鉄砲', sp1Kind: 'water_shot', sp2Name: 'ハイドロダイブ', sp2Kind: 'hydro_dive' },
+      { sp1Name: 'エッグボムバインド', sp1Kind: 'egg_bind', sp2Name: 'ロケットホップ', sp2Kind: 'rocket_hop' },
+      { sp1Name: '突進タックル', sp1Kind: 'tackle', sp2Name: 'カチ上げアッパー', sp2Kind: 'upper' },
+      { sp1Name: '大口バキューム吸い込み', sp1Kind: 'suction', sp2Name: 'メガスタンプ', sp2Kind: 'mega_stamp' }
+    ];
+
+    const BEASTS_DATABASE = [];
+    for (let i = 0; i < 100; i++) {
+      const name = BEAST_NAMES[i] || `ビースト [${i+1}]`;
+      const template = BEAST_SKILL_TEMPLATES[i % BEAST_SKILL_TEMPLATES.length];
+
+      BEASTS_DATABASE.push({
+        id: i,
+        name: name,
+        type: SKILL_TYPES[i % SKILL_TYPES.length],
+        speed: 4.8 + (i % 5) * 0.15,
+        jump: 12.8 + (i % 4) * 0.25,
+        weight: 1.0 + (i % 6) * 0.08,
+        sp1Name: `${name}流・${template.sp1Name}`,
+        sp1Kind: template.sp1Kind,
+        sp2Name: `${name}流・${template.sp2Name}`,
+        sp2Kind: template.sp2Kind,
+        isLimited: false
+      });
+    }
+
+    const LIMITED_BEASTS = [
+      { id: 100, name: '極光の白虎', type: 'MYTH', speed: 5.5, jump: 13.5, weight: 1.25, sp1Name: '白虎極光牙', sp1Kind: 'slash_wave', sp2Name: '天翔虎斬', sp2Kind: 'shoryu', isLimited: true },
+      { id: 101, name: '神代の鳳凰', type: 'BIRD', speed: 5.6, jump: 14.0, weight: 1.10, sp1Name: '鳳凰紅蓮弾', sp1Kind: 'roar', sp2Name: '転生飛翔', sp2Kind: 'fire_dash', isLimited: true },
+      { id: 102, name: '深淵の海皇', type: 'AQUA', speed: 5.2, jump: 13.2, weight: 1.40, sp1Name: '海皇大渦潮', sp1Kind: 'suction', sp2Name: 'ハイドロ津波', sp2Kind: 'hydro_dive', isLimited: true },
+      { id: 103, name: '終焉の邪竜', type: 'DRAGON', speed: 5.4, jump: 13.8, weight: 1.35, sp1Name: '邪竜滅殺咆', sp1Kind: 'stone', sp2Name: 'ドラゴンフライ', sp2Kind: 'spiral_lift', isLimited: true }
+    ];
+
+    /* ==========================================================================
+       5. ユーザーデータ & CPU難易度
+       ========================================================================== */
+    const UserData = {
+      name: localStorage.getItem('pf_name') || 'PLAYER_1',
+      coins: parseInt(localStorage.getItem('pf_coins') || '1000', 10),
+      currentBeastId: parseInt(localStorage.getItem('pf_beast') || '0', 10),
+      currentSkillId: parseInt(localStorage.getItem('pf_skill') || '0', 10),
+      cpuLevel: localStorage.getItem('pf_cpu_level') || 'HARD',
+      ownedBeasts: JSON.parse(localStorage.getItem('pf_owned_beasts') || '[0, 11, 12, 13]'),
+      ownedSkills: JSON.parse(localStorage.getItem('pf_owned_skills') || '[0]'),
+      matches: parseInt(localStorage.getItem('pf_matches') || '0', 10),
+      wins: parseInt(localStorage.getItem('pf_wins') || '0', 10),
+      save() {
+        localStorage.setItem('pf_name', this.name);
+        localStorage.setItem('pf_coins', this.coins);
+        localStorage.setItem('pf_beast', this.currentBeastId);
+        localStorage.setItem('pf_skill', this.currentSkillId);
+        localStorage.setItem('pf_cpu_level', this.cpuLevel);
+        localStorage.setItem('pf_owned_beasts', JSON.stringify(this.ownedBeasts));
+        localStorage.setItem('pf_owned_skills', JSON.stringify(this.ownedSkills));
+        localStorage.setItem('pf_matches', this.matches);
+        localStorage.setItem('pf_wins', this.wins);
+      }
+    };
+
+    /* ==========================================================================
+       6. 状態管理
+       ========================================================================== */
+    const State = {
+      view: 'home',
+      mode: 'edit',
+      selectedTool: 'erase_ground',
+      currentCat: 'terrain',
+      currentGachaTab: 'standard',
+      editorHoverX: -1,
+      terrain: [],
+      objects: [],
+      particles: [],
+      bullets: [],
+      cannonBalls: [],
+      hitboxes: [],
+      traps: [],
+      p1: null,
+      p2: null,
+      gameEnded: false,
+      tick: 0,
+      hitstop: 0,
+      screenShake: 0
+    };
+
+    /* ==========================================================================
+       7. ★外枠固定＆内側黒丸が遠くまで動くジョイスティック
+       ========================================================================== */
+    const Inputs = { stickX: 0, stickY: 0, jump: false, attack: false, sp1: false, sp2: false, skill: false, shield: false };
+    const KeyState = new Set();
+
+    const stickZone = document.getElementById('stick-touch-zone');
+    const stickBase = document.getElementById('fixed-stick-base');
+    const stickKnob = document.getElementById('fixed-stick-knob');
+
+    let stickPointerId = null;
+    // ★可動域を70pxに拡大（外枠を飛び出して指の先までダイナミックに伸びる！）
+    const STICK_MAX_PULL_RANGE = 70;
+
+    function handleStickPointerMove(clientX, clientY) {
+      const rect = stickBase.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      let dx = clientX - centerX;
+      let dy = clientY - centerY;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist > STICK_MAX_PULL_RANGE) {
+        dx = (dx / dist) * STICK_MAX_PULL_RANGE;
+        dy = (dy / dist) * STICK_MAX_PULL_RANGE;
+      }
+
+      // 黒丸ノブがベースの外まで遠く伸びる！
+      stickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+
+      // 入力値は40pxで最大値1.0に達するスムーズなカーブ
+      Inputs.stickX = Math.max(-1, Math.min(1, dx / 40));
+      Inputs.stickY = Math.max(-1, Math.min(1, dy / 40));
+    }
+
+    function returnStickToOrigin() {
+      stickPointerId = null;
+      stickKnob.style.transform = `translate(0px, 0px)`;
+      Inputs.stickX = 0;
+      Inputs.stickY = 0;
+      syncAllControls();
+    }
+
+    stickZone.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      stickPointerId = e.pointerId;
+      try { stickZone.setPointerCapture(e.pointerId); } catch(err){}
+      handleStickPointerMove(e.clientX, e.clientY);
+    });
+
+    stickZone.addEventListener('pointermove', (e) => {
+      if (e.pointerId === stickPointerId) {
+        handleStickPointerMove(e.clientX, e.clientY);
+      }
+    });
+
+    stickZone.addEventListener('pointerup', (e) => {
+      if (e.pointerId === stickPointerId) {
+        returnStickToOrigin();
+        try { stickZone.releasePointerCapture(e.pointerId); } catch(err){}
+      }
+    });
+
+    stickZone.addEventListener('pointercancel', (e) => {
+      if (e.pointerId === stickPointerId) returnStickToOrigin();
+    });
+
+    // 4スロット技アクションボタン
+    let vpadFlags = { jump: false, attack: false, sp1: false, sp2: false, skill: false, shield: false };
+
+    function bindClusterBtn(elId, keyProp) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      let myPId = null;
+
+      el.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        myPId = e.pointerId;
+        try { el.setPointerCapture(e.pointerId); } catch(err){}
+        vpadFlags[keyProp] = true;
+        el.classList.add('pressed');
+        syncAllControls();
+      });
+
+      const upHandler = (e) => {
+        if (e.pointerId === myPId) {
+          myPId = null;
+          vpadFlags[keyProp] = false;
+          el.classList.remove('pressed');
+          syncAllControls();
+          try { el.releasePointerCapture(e.pointerId); } catch(err){}
+        }
+      };
+
+      el.addEventListener('pointerup', upHandler);
+      el.addEventListener('pointercancel', upHandler);
+    }
+
+    bindClusterBtn('btn-ergo-jump', 'jump');
+    bindClusterBtn('btn-ergo-atk', 'attack');
+    bindClusterBtn('btn-ergo-sp1', 'sp1');
+    bindClusterBtn('btn-ergo-sp2', 'sp2');
+    bindClusterBtn('btn-ergo-skill', 'skill');
+    bindClusterBtn('btn-ergo-shield', 'shield');
+
+    window.addEventListener('keydown', (e) => {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
+      KeyState.add(e.code);
+      syncAllControls();
+    }, { passive: false });
+
+    window.addEventListener('keyup', (e) => {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
+      KeyState.delete(e.code);
+      syncAllControls();
+    }, { passive: false });
+
+    function syncAllControls() {
+      if (stickPointerId === null) {
+        let sx = 0; let sy = 0;
+        if (KeyState.has('KeyA') || KeyState.has('ArrowLeft')) sx -= 1;
+        if (KeyState.has('KeyD') || KeyState.has('ArrowRight')) sx += 1;
+        if (KeyState.has('KeyW') || KeyState.has('ArrowUp')) sy -= 1;
+        if (KeyState.has('KeyS') || KeyState.has('ArrowDown')) sy += 1;
+        Inputs.stickX = sx;
+        Inputs.stickY = sy;
+      }
+
+      Inputs.jump = KeyState.has('KeyW') || KeyState.has('ArrowUp') || KeyState.has('Space') || vpadFlags.jump;
+      Inputs.attack = KeyState.has('KeyJ') || KeyState.has('KeyZ') || vpadFlags.attack;
+      Inputs.sp1 = KeyState.has('KeyK') || vpadFlags.sp1;
+      Inputs.sp2 = KeyState.has('KeyU') || vpadFlags.sp2;
+      Inputs.skill = KeyState.has('KeyI') || KeyState.has('KeyX') || vpadFlags.skill;
+      Inputs.shield = KeyState.has('KeyL') || KeyState.has('ShiftLeft') || KeyState.has('ShiftRight') || vpadFlags.shield;
+    }
+
+    /* ==========================================================================
+       8. 100種動物固有ビジュアル描画
+       ========================================================================== */
+    function drawAnimalUniqueSilhouette(ctx, id, walk) {
+      const idx = id >= 100 ? (id - 100) : (id % 100);
+      switch(idx) {
+        case 0: ctx.moveTo(-16,-46); ctx.lineTo(-20,-58); ctx.lineTo(-10,-54); ctx.lineTo(0,-62); ctx.lineTo(10,-54); ctx.lineTo(20,-58); ctx.lineTo(16,-46); ctx.lineTo(20,-34); ctx.lineTo(-20,-34); break;
+        case 1: ctx.moveTo(-8,-44); ctx.lineTo(-12,-58); ctx.lineTo(-2,-48); ctx.lineTo(4,-48); ctx.lineTo(12,-58); ctx.lineTo(8,-44); ctx.lineTo(14,-38); ctx.lineTo(8,-34); ctx.lineTo(-10,-34); break;
+        case 2: ctx.moveTo(-12,-44); ctx.lineTo(-16,-54); ctx.lineTo(-4,-48); ctx.lineTo(4,-48); ctx.lineTo(16,-54); ctx.lineTo(12,-44); ctx.lineTo(16,-36); ctx.lineTo(-16,-36); break;
+        case 3: ctx.moveTo(-9,-42); ctx.lineTo(-12,-50); ctx.lineTo(-4,-46); ctx.lineTo(4,-46); ctx.lineTo(12,-50); ctx.lineTo(9,-42); ctx.lineTo(11,-35); ctx.lineTo(-11,-35); break;
+        case 4: ctx.moveTo(-7,-42); ctx.lineTo(-9,-49); ctx.lineTo(-2,-46); ctx.lineTo(2,-46); ctx.lineTo(9,-49); ctx.lineTo(7,-42); ctx.lineTo(8,-34); ctx.lineTo(-8,-34); break;
+        case 5: ctx.moveTo(-12,-44); ctx.lineTo(-14,-52); ctx.lineTo(-4,-48); ctx.lineTo(4,-48); ctx.lineTo(14,-52); ctx.lineTo(12,-44); ctx.lineTo(14,-32); ctx.lineTo(-14,-32); break;
+        case 6: ctx.moveTo(-10,-42); ctx.lineTo(-16,-52); ctx.lineTo(-4,-52); ctx.lineTo(4,-52); ctx.lineTo(16,-52); ctx.lineTo(10,-42); ctx.lineTo(12,-34); ctx.lineTo(-12,-34); break;
+        case 7: ctx.moveTo(-12,-44); ctx.lineTo(-15,-52); ctx.lineTo(-5,-50); ctx.lineTo(5,-50); ctx.lineTo(15,-52); ctx.lineTo(12,-44); ctx.lineTo(16,-36); ctx.lineTo(-12,-36); break;
+        case 8: ctx.moveTo(-12,-42); ctx.lineTo(-16,-52); ctx.lineTo(-6,-50); ctx.lineTo(6,-50); ctx.lineTo(16,-52); ctx.lineTo(12,-42); ctx.lineTo(10,-34); ctx.lineTo(-10,-34); break;
+        case 9: ctx.moveTo(-8,-44); ctx.lineTo(-14,-62); ctx.lineTo(-1,-50); ctx.lineTo(1,-50); ctx.lineTo(14,-62); ctx.lineTo(8,-44); ctx.lineTo(12,-36); ctx.lineTo(-10,-36); break;
+        case 10: ctx.moveTo(-10,-42); ctx.lineTo(-13,-52); ctx.lineTo(-3,-47); ctx.lineTo(3,-47); ctx.lineTo(13,-52); ctx.lineTo(10,-42); ctx.lineTo(12,-34); ctx.lineTo(-12,-34); break;
+        case 11: ctx.moveTo(-8,-44); ctx.lineTo(-14,-46); ctx.lineTo(-16,-34); ctx.lineTo(-6,-42); ctx.lineTo(6,-42); ctx.lineTo(16,-34); ctx.lineTo(14,-46); ctx.lineTo(8,-44); break;
+        case 12: ctx.moveTo(-8,-44); ctx.lineTo(-11,-56); ctx.lineTo(-3,-48); ctx.lineTo(3,-48); ctx.lineTo(11,-56); ctx.lineTo(8,-44); ctx.lineTo(10,-34); ctx.lineTo(-10,-34); break;
+        case 13: ctx.moveTo(-6,-42); ctx.lineTo(-8,-66); ctx.lineTo(-2,-66); ctx.lineTo(-1,-44); ctx.lineTo(1,-44); ctx.lineTo(2,-66); ctx.lineTo(8,-66); ctx.lineTo(6,-42); ctx.lineTo(8,-34); ctx.lineTo(-8,-34); break;
+        case 14: ctx.moveTo(-9,-44); ctx.lineTo(-12,-52); ctx.lineTo(2,-48); ctx.lineTo(16,-40); ctx.lineTo(18,-48); ctx.lineTo(14,-34); ctx.lineTo(-10,-34); break;
+        case 15: ctx.moveTo(-6,-44); ctx.lineTo(-16,-62); ctx.lineTo(-10,-62); ctx.lineTo(-4,-52); ctx.lineTo(4,-52); ctx.lineTo(10,-62); ctx.lineTo(16,-62); ctx.lineTo(6,-44); ctx.lineTo(8,-34); ctx.lineTo(-8,-34); break;
+        case 16: ctx.moveTo(-10,-44); ctx.lineTo(-18,-54); ctx.lineTo(-12,-58); ctx.lineTo(-6,-50); ctx.lineTo(6,-50); ctx.lineTo(12,-58); ctx.lineTo(18,-54); ctx.lineTo(10,-44); ctx.lineTo(14,-34); ctx.lineTo(-14,-34); break;
+        case 17: ctx.moveTo(-10,-44); ctx.lineTo(-12,-54); ctx.lineTo(2,-52); ctx.lineTo(22,-62); ctx.lineTo(16,-42); ctx.lineTo(6,-36); ctx.lineTo(-10,-36); break;
+        case 18: ctx.moveTo(-10,-44); ctx.lineTo(-10,-52); ctx.lineTo(4,-52); ctx.lineTo(4,-44); ctx.lineTo(16,-44); ctx.lineTo(16,-32); ctx.lineTo(-10,-32); break;
+        case 19: ctx.moveTo(-16,-48); ctx.lineTo(-14,-58); ctx.lineTo(4,-58); ctx.lineTo(14,-48); ctx.lineTo(12,-34); ctx.lineTo(16,-18); ctx.lineTo(8,-18); ctx.lineTo(4,-36); ctx.lineTo(-16,-36); break;
+        default: ctx.moveTo(-8,-44); ctx.lineTo(-12,-56); ctx.lineTo(-3,-48); ctx.lineTo(3,-48); ctx.lineTo(12,-56); ctx.lineTo(8,-44); ctx.lineTo(10,-34); ctx.lineTo(-10,-34); break;
+      }
+      ctx.closePath();
+      ctx.rect(-6, -34, 12, 18);
+      ctx.rect(-8 + walk * 4, -16, 6, 16);
+      ctx.rect(2 - walk * 4, -16, 6, 16);
+      ctx.rect(ctx._facing === 1 ? -2 : -16, -32, 18, 6);
+    }
+
+    /* ==========================================================================
+       9. スマブラ型 ファイター（★100種固有技発動ロジック）
+       ========================================================================== */
+    class BeastFighter {
+      constructor(x, y, beastData, customSkill, isCPU = false) {
+        this.x = x; this.y = y; this.vx = 0; this.vy = 0;
+        this.beast = beastData;
+        this.customSkill = customSkill;
+        this.isCPU = isCPU;
+        this.facing = isCPU ? -1 : 1;
+        this.synergyMultiplier = (this.beast.type === this.customSkill.type) ? 1.3 : 1.0;
+
+        this.damage = 0;
+        this.stocks = 3;
+        this.grounded = false;
+        this.jumpsLeft = 2;
+        this.shield = 100;
+        this.isShielding = false;
+        this.isDodging = false;
+        this.dodgeTimer = 0;
+        this.hitstun = 0;
+        this.actionState = 'idle';
+        this.chargeTimer = 0;
+        this.animTimer = 0;
+        this.invincibleTimer = 60;
+        this.friction = 0.84;
+      }
+
+      update(opponent) {
+        if (this.invincibleTimer > 0) this.invincibleTimer--;
+
+        if (this.hitstun > 0) {
+          this.hitstun--;
+          this.vy += GRAVITY * 0.85;
+          this.vx *= 0.96;
+          if (!this.isCPU && Math.abs(Inputs.stickX) > 0.2) {
+            this.vx += Inputs.stickX * 0.35;
+          }
+          this.x += this.vx; this.y += this.vy;
+          this.handleCollisions();
+          this.checkBlastZones();
+          return;
+        }
+
+        if (this.isDodging) {
+          this.dodgeTimer--;
+          if (this.dodgeTimer <= 0) this.isDodging = false;
+          this.x += this.vx; this.y += this.vy;
+          this.handleCollisions();
+          return;
+        }
+
+        if (!this.isShielding && this.shield < 100) this.shield += 0.25;
+
+        if (!this.isCPU) {
+          this.handlePlayerInput();
+        } else {
+          this.handleStrategicAI(opponent);
+        }
+
+        this.vy += GRAVITY;
+        this.x += this.vx;
+        this.y += this.vy;
+
+        this.handleCollisions();
+        this.checkBlastZones();
+
+        if (Math.abs(this.vx) > 0.15 && this.grounded) this.animTimer += 0.25;
+      }
+
+      handlePlayerInput() {
+        if (Inputs.shield && this.grounded && this.actionState === 'idle') {
+          this.isShielding = true;
+          this.vx *= 0.5;
+          this.shield -= 0.5;
+          if (Inputs.stickX < -0.5) { this.dodge(-6); return; }
+          if (Inputs.stickX > 0.5) { this.dodge(6); return; }
+          return;
+        } else {
+          this.isShielding = false;
+        }
+
+        if (this.actionState === 'fsmash_charge') {
+          this.chargeTimer = Math.min(50, this.chargeTimer + 1);
+          if (!Inputs.attack) this.releaseFSmash();
+          return;
+        }
+
+        if (this.actionState === 'idle') {
+          if (Math.abs(Inputs.stickX) > 0.12) {
+            this.vx = Inputs.stickX * this.beast.speed;
+            this.facing = Inputs.stickX > 0 ? 1 : -1;
+          } else {
+            this.vx *= this.friction;
+          }
+
+          if (Inputs.jump && this.jumpsLeft > 0) {
+            this.vy = -this.beast.jump;
+            this.jumpsLeft--;
+            this.grounded = false;
+            Inputs.jump = false;
+            createSplatter(this.x, this.y, '#111111', 4);
+          }
+
+          // ★動物固有技1
+          if (Inputs.sp1) {
+            this.executeInnateSkill1();
+            Inputs.sp1 = false;
+          }
+          // ★動物固有技2（復帰・上昇技）
+          else if (Inputs.sp2) {
+            this.executeInnateSkill2();
+            Inputs.sp2 = false;
+          }
+          // カスタム技
+          else if (Inputs.skill) {
+            this.executeCustomSkill();
+            Inputs.skill = false;
+          }
+          // 通常攻撃・スマッシュ
+          else if (Inputs.attack) {
+            if (!this.grounded) {
+              if (Inputs.stickY > 0.3) this.executeDairMeteor();
+              else if (Math.abs(Inputs.stickX) > 0.3) this.executeFair();
+              else this.executeNair();
+            } else {
+              if (Math.abs(Inputs.stickX) > 0.4) {
+                this.actionState = 'fsmash_charge';
+                this.chargeTimer = 0;
+              } else {
+                this.executeJab();
+              }
+            }
+          }
+        }
+      }
+
+      handleStrategicAI(target) {
+        const level = UserData.cpuLevel;
+        const dist = target.x - this.x;
+        const absDist = Math.abs(dist);
+        this.facing = dist > 0 ? 1 : -1;
+
+        if (!this.grounded && (this.x < 120 || this.x > CANVAS_WIDTH - 120 || this.y > 420)) {
+          this.vx = (CANVAS_WIDTH / 2 > this.x ? 1 : -1) * 3.8;
+          if (level === 'EASY') {
+            if (this.jumpsLeft > 0 && Math.random() < 0.05) { this.vy = -this.beast.jump * 0.8; this.jumpsLeft--; }
+          } else {
+            if (this.jumpsLeft > 0 && this.vy > 0.5) {
+              this.vy = -this.beast.jump; this.jumpsLeft--;
+            } else if (this.jumpsLeft === 0 && this.y > 360) {
+              this.executeInnateSkill2();
+            }
+          }
+          return;
+        }
+
+        const isCliffAhead = (getTerrainHeightAt(this.x + this.facing * 35) === null);
+
+        if (this.actionState === 'idle') {
+          if (level === 'EASY') {
+            if (absDist > 180 && !isCliffAhead) this.vx = this.facing * (this.beast.speed * 0.5);
+            else { this.vx = 0; if (Math.random() < 0.04) this.executeJab(); }
+          } else if (level === 'NORMAL') {
+            if (absDist > 140 && !isCliffAhead) this.vx = this.facing * (this.beast.speed * 0.8);
+            else { this.vx *= 0.6; if (Math.random() < 0.12) this.executeInnateSkill1(); }
+          } else {
+            if (!target.grounded && target.y > this.y && absDist < 110) this.executeDairMeteor();
+            else if (absDist < 65) {
+              if (Math.random() < 0.3) { this.isShielding = true; setTimeout(() => { this.isShielding = false; this.executeJab(); }, 180); }
+              else this.executeJab();
+            } else if (absDist < 180 && !isCliffAhead) {
+              if (this.grounded && Math.random() < 0.35) {
+                this.vy = -this.beast.jump * 0.85; this.vx = this.facing * (this.beast.speed * 1.1); this.grounded = false;
+                setTimeout(() => { if (!this.grounded) this.executeFair(); }, 150);
+              } else this.vx = this.facing * this.beast.speed;
+            } else if (!isCliffAhead) {
+              this.vx = this.facing * this.beast.speed;
+              if (absDist < 260 && Math.random() < 0.2) this.executeInnateSkill1();
+            } else {
+              this.vx = 0;
+              if (Math.random() < 0.2) this.executeCustomSkill();
+            }
+          }
+        }
+      }
+
+      /* ★100種固有技1（SP1）の発動処理 */
+      executeInnateSkill1() {
+        this.actionState = 'sp1';
+        showToast(`［${this.beast.name}］${this.beast.sp1Name}`);
+
+        const kind = this.beast.sp1Kind;
+        if (kind === 'roar') {
+          // 咆哮衝撃波
+          State.hitboxes.push({ owner: this, x: this.x + this.facing * 18, y: this.y - 28, w: 60, h: 36, damage: 10, knockbackX: this.facing * 8, knockbackY: -5, life: 9 });
+          createSplatter(this.x + this.facing * 30, this.y - 20, '#111111', 14);
+        } else if (kind === 'shine') {
+          // リフレクト反射
+          this.invincibleTimer = 35;
+          State.hitboxes.push({ owner: this, x: this.x - 20, y: this.y - 35, w: 40, h: 40, damage: 8, knockbackX: this.facing * 7, knockbackY: -4, life: 6 });
+          triggerScreenShake(4);
+        } else if (kind === 'slash_wave') {
+          // 飛ぶ斬撃波
+          State.bullets.push({ x: this.x + this.facing * 18, y: this.y - 26, vx: this.facing * 12, vy: -1, owner: this, dmg: 10, kb: 8 });
+        } else if (kind === 'roll') {
+          // 高速突進ロール
+          this.vx = this.facing * 11;
+          State.hitboxes.push({ owner: this, x: this.x, y: this.y - 20, w: 35, h: 30, damage: 9, knockbackX: this.facing * 7, knockbackY: -5, life: 10 });
+        } else if (kind === 'stone') {
+          // 急降下ヘビーストーン
+          this.vy = 12;
+          State.hitboxes.push({ owner: this, x: this.x - 18, y: this.y, w: 36, h: 40, damage: 15, knockbackX: 0, knockbackY: 16, isMeteor: true, life: 10 });
+        } else if (kind === 'egg_bind') {
+          // 卵バインド
+          State.bullets.push({ x: this.x + this.facing * 16, y: this.y - 24, vx: this.facing * 9, vy: -3, owner: this, dmg: 7, kb: 5 });
+        } else if (kind === 'suction') {
+          // 吸い込み重力波
+          const opp = (this === State.p1 ? State.p2 : State.p1);
+          if (opp) { opp.vx = -Math.sign(opp.x - this.x) * 10; opp.vy = -3; }
+        } else {
+          // タックル
+          this.vx = this.facing * 8;
+          State.hitboxes.push({ owner: this, x: this.x + this.facing * 16, y: this.y - 26, w: 42, h: 32, damage: 9, knockbackX: this.facing * 7, knockbackY: -4, life: 8 });
+        }
+
+        setTimeout(() => { if (this.actionState === 'sp1') this.actionState = 'idle'; }, 260);
+      }
+
+      /* ★100種固有技2（SP2 / 上昇・復帰技）の発動処理 */
+      executeInnateSkill2() {
+        this.actionState = 'sp2';
+        showToast(`［${this.beast.name}］${this.beast.sp2Name}`);
+
+        const kind = this.beast.sp2Kind;
+        this.vy = -16.5;
+        this.vx = this.facing * 2.8;
+
+        if (kind === 'shoryu') {
+          // 垂直昇龍拳
+          this.vy = -18.0;
+          this.vx = 0;
+          State.hitboxes.push({ owner: this, x: this.x - 12, y: this.y - 35, w: 44, h: 54, damage: 13, knockbackX: this.facing * 4, knockbackY: -14, life: 14 });
+        } else if (kind === 'fire_dash') {
+          // 炎の急上昇ダッシュ
+          State.hitboxes.push({ owner: this, x: this.x - 14, y: this.y - 30, w: 48, h: 48, damage: 12, knockbackX: this.facing * 7, knockbackY: -10, life: 14 });
+          createSplatter(this.x, this.y, '#111111', 16);
+        } else {
+          // スパイラルリフト
+          State.hitboxes.push({ owner: this, x: this.x - 12, y: this.y - 32, w: 48, h: 52, damage: 11, knockbackX: this.facing * 5, knockbackY: -11, life: 14 });
+          createSplatter(this.x, this.y, '#111111', 12);
+        }
+
+        setTimeout(() => { if (this.actionState === 'sp2') this.actionState = 'idle'; }, 320);
+      }
+
+      executeCustomSkill() {
+        this.actionState = 'skill';
+        const sk = this.customSkill;
+        showToast(`カスタム技: ${sk.name}`);
+        const dmg = Math.round(sk.damage * this.synergyMultiplier);
+        const kb = sk.knockback * this.synergyMultiplier;
+
+        switch (sk.kind) {
+          case 0: State.bullets.push({ x: this.x + this.facing * 18, y: this.y - 25, vx: this.facing * 8, vy: -1, homing: true, owner: this, dmg, kb }); break;
+          case 1: for (let a = -1; a <= 1; a++) State.bullets.push({ x: this.x + this.facing * 18, y: this.y - 25, vx: this.facing * 9.5, vy: a * 2.2, owner: this, dmg, kb }); break;
+          case 2: State.hitboxes.push({ owner: this, x: this.x + this.facing * 18, y: this.y - 15, w: 70, h: 30, damage: dmg, knockbackX: this.facing * kb, knockbackY: -6, life: 8 }); break;
+          case 3: State.hitboxes.push({ owner: this, x: this.facing === 1 ? this.x : this.x - 280, y: this.y - 28, w: 280, h: 20, damage: dmg, knockbackX: this.facing * (kb * 1.1), knockbackY: -3, life: 5 }); triggerScreenShake(4); break;
+          case 4: State.traps.push({ x: this.x, y: this.y - 8, owner: this, dmg, kb }); showToast('地雷設置'); break;
+          default: State.bullets.push({ x: this.x + this.facing * 18, y: this.y - 25, vx: this.facing * 11, vy: -2, owner: this, dmg, kb }); break;
+        }
+        setTimeout(() => { if (this.actionState === 'skill') this.actionState = 'idle'; }, 280);
+      }
+
+      executeJab() {
+        this.actionState = 'jab';
+        State.hitboxes.push({ owner: this, x: this.x + this.facing * 18, y: this.y - 24, w: 28, h: 26, damage: 5, knockbackX: this.facing * 4.2, knockbackY: -2.5, life: 5 });
+        setTimeout(() => { if (this.actionState === 'jab') this.actionState = 'idle'; }, 160);
+      }
+
+      executeFair() {
+        this.actionState = 'fair';
+        State.hitboxes.push({ owner: this, x: this.x + this.facing * 22, y: this.y - 26, w: 34, h: 30, damage: 8, knockbackX: this.facing * 7.5, knockbackY: -3.5, life: 7 });
+        createSplatter(this.x + this.facing * 18, this.y - 20, '#111111', 6);
+        setTimeout(() => { if (this.actionState === 'fair') this.actionState = 'idle'; }, 200);
+      }
+
+      executeNair() {
+        this.actionState = 'nair';
+        State.hitboxes.push({ owner: this, x: this.x - 20, y: this.y - 32, w: 40, h: 36, damage: 7, knockbackX: this.facing * 5, knockbackY: -4, life: 8 });
+        setTimeout(() => { if (this.actionState === 'nair') this.actionState = 'idle'; }, 200);
+      }
+
+      executeDairMeteor() {
+        this.actionState = 'dair'; this.vy = 7.5;
+        State.hitboxes.push({ owner: this, x: this.x - 16, y: this.y + 2, w: 34, h: 36, damage: 13, knockbackX: 0, knockbackY: 15, isMeteor: true, life: 10 });
+        createSplatter(this.x, this.y + 10, '#111111', 10);
+        setTimeout(() => { if (this.actionState === 'dair') this.actionState = 'idle'; }, 240);
+      }
+
+      releaseFSmash() {
+        this.actionState = 'fsmash';
+        const chargeRatio = this.chargeTimer / 50;
+        const dmg = Math.round((12 + chargeRatio * 14) * this.synergyMultiplier);
+        const kb = 7.5 + chargeRatio * 9;
+        this.vx = this.facing * 4.5;
+        State.hitboxes.push({ owner: this, x: this.x + this.facing * 24, y: this.y - 28, w: 42, h: 34, damage: dmg, knockbackX: this.facing * kb, knockbackY: -5, life: 7 });
+        createSplatter(this.x + this.facing * 24, this.y - 24, '#111111', 16);
+        triggerScreenShake(6);
+        setTimeout(() => { if (this.actionState === 'fsmash') this.actionState = 'idle'; }, 260);
+      }
+
+      dodge(power) {
+        this.isDodging = true; this.dodgeTimer = 14;
+        this.vx = power; this.isShielding = false;
+        createSplatter(this.x, this.y - 15, '#666666', 6);
+      }
+
+      takeHit(hitbox) {
+        if (this.invincibleTimer > 0 || this.isDodging) return;
+        if (this.isShielding) {
+          this.shield -= hitbox.damage * 1.2;
+          this.vx = hitbox.knockbackX * 0.15;
+          triggerHitstop(3);
+          return;
+        }
+
+        this.damage += hitbox.damage;
+        const percentRatio = this.damage / 100;
+        const knockbackScale = (0.45 + percentRatio * 1.05) / this.beast.weight;
+        this.vx = hitbox.knockbackX * knockbackScale;
+        this.vy = hitbox.knockbackY * knockbackScale;
+        this.hitstun = Math.min(65, Math.round(10 + knockbackScale * 6));
+
+        const stopFrames = hitbox.isMeteor ? 10 : (hitbox.damage > 12 ? 8 : 4);
+        triggerHitstop(stopFrames);
+        triggerScreenShake(hitbox.damage > 12 ? 6 : 3);
+        createSplatter(this.x, this.y - 20, '#111111', 14);
+      }
+
+      handleCollisions() {
+        const terrainY = getTerrainHeightAt(this.x);
+        if (terrainY !== null && this.y >= terrainY) {
+          this.y = terrainY; this.vy = 0; this.grounded = true;
+          this.jumpsLeft = 2;
+        } else {
+          this.grounded = false;
+        }
+
+        const checkLeft = getTerrainHeightAt(this.x - 8);
+        const checkRight = getTerrainHeightAt(this.x + 8);
+        if (checkLeft !== null && checkLeft < this.y - 15 && this.vx < 0) this.vx = 0;
+        if (checkRight !== null && checkRight < this.y - 15 && this.vx > 0) this.vx = 0;
+      }
+
+      checkBlastZones() {
+        if (this.x < BLAST_LEFT || this.x > BLAST_RIGHT || this.y < BLAST_TOP || this.y > BLAST_BOTTOM) {
+          this.burst();
+        }
+      }
+
+      burst() {
+        triggerScreenShake(14);
+        triggerHitstop(6);
+        createSplatter(Math.max(20, Math.min(CANVAS_WIDTH - 20, this.x)), Math.max(20, Math.min(CANVAS_HEIGHT - 20, this.y)), '#111111', 32);
+        this.stocks--;
+        updateSmashHUD();
+
+        if (this.stocks <= 0) {
+          endBattle(this.isCPU ? 'PLAYER 1 VICTORY' : 'CPU VICTORY');
+        } else {
+          this.x = CANVAS_WIDTH / 2 + (this.isCPU ? 80 : -80);
+          this.y = 120; this.vx = 0; this.vy = 0; this.damage = 0;
+          this.invincibleTimer = 80;
+          updateSmashHUD();
+        }
+      }
+
+      draw(ctx) {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+
+        if (this.invincibleTimer > 0 && Math.floor(State.tick / 4) % 2 === 0) {
+          ctx.restore(); return;
+        }
+
+        const walk = Math.sin(this.animTimer);
+        const fillRatio = Math.min(1.0, this.damage / 120);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx._facing = this.facing;
+        drawAnimalUniqueSilhouette(ctx, this.beast.id, walk);
+        ctx.clip();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(-28, -72, 56, 76);
+
+        if (fillRatio > 0) {
+          ctx.fillStyle = this.isCPU ? '#555555' : '#111111';
+          const fillH = 72 * fillRatio;
+          ctx.fillRect(-28, 2 - fillH, 56, fillH + 10);
+        }
+        ctx.restore();
+
+        ctx.strokeStyle = '#111111';
+        ctx.lineWidth = 2.5;
+        ctx.lineJoin = 'miter';
+        ctx.beginPath();
+        ctx._facing = this.facing;
+        drawAnimalUniqueSilhouette(ctx, this.beast.id, walk);
+        ctx.stroke();
+
+        if (this.isCPU) {
+          ctx.beginPath(); ctx.arc(0, -40, 3, 0, Math.PI * 2); ctx.stroke();
+        }
+
+        if (this.isShielding) {
+          ctx.save();
+          ctx.setLineDash([4, 4]); ctx.strokeStyle = '#111111'; ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.arc(0, -20, 28 * (this.shield / 100), 0, Math.PI * 2); ctx.stroke();
+          ctx.restore();
+        }
+
+        ctx.restore();
+      }
+    }
+
+    /* ==========================================================================
+       10. 地形判定
+       ========================================================================== */
+    function getTerrainHeightAt(x) {
+      if (x < 0 || x >= CANVAS_WIDTH) return null;
+      const segIndex = x / SEGMENT_WIDTH;
+      const i0 = Math.floor(segIndex);
+      const i1 = i0 + 1;
+      if (i1 >= TERRAIN_SEGMENTS) return State.terrain[i0];
+      const y0 = State.terrain[i0];
+      const y1 = State.terrain[i1];
+      if (y0 !== null && y1 !== null) return y0 + (y1 - y0) * (segIndex - i0);
+      return null;
+    }
+
+    function generateCityTerrain() {
+      const terrain = [];
+      for (let i = 0; i < TERRAIN_SEGMENTS; i++) {
+        const norm = i / TERRAIN_SEGMENTS;
+        if ((norm > 0.16 && norm < 0.22) || (norm > 0.44 && norm < 0.52) || (norm > 0.76 && norm < 0.82)) {
+          terrain.push(null);
+        } else {
+          terrain.push(340 + Math.sin(norm * 14) * 60);
+        }
+      }
+      State.terrain = terrain;
+    }
+
+    /* ==========================================================================
+       11. レンダリングループ
+       ========================================================================== */
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function render() {
+      if (State.hitstop > 0) { State.hitstop--; requestAnimationFrame(render); return; }
+      State.tick++;
+
+      ctx.save();
+      if (State.screenShake > 0) {
+        ctx.translate((Math.random() - 0.5) * State.screenShake, (Math.random() - 0.5) * State.screenShake);
+        State.screenShake *= 0.85;
+        if (State.screenShake < 0.5) State.screenShake = 0;
+      }
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+      drawTerrain();
+      drawObjects();
+
+      if (State.mode === 'edit') {
+        drawEditorGrid();
+      } else {
+        updateSmashBattle();
+        drawSmashBattle();
+      }
+
+      ctx.restore();
+      requestAnimationFrame(render);
+    }
+
+    function drawTerrain() {
+      if (!State.terrain) return;
+      ctx.fillStyle = '#f8f9fa';
+      ctx.beginPath();
+      let started = false;
+      for (let i = 0; i < TERRAIN_SEGMENTS; i++) {
+        const x = i * SEGMENT_WIDTH;
+        const y = State.terrain[i];
+        if (y !== null) {
+          if (!started) { ctx.moveTo(x, CANVAS_HEIGHT); ctx.lineTo(x, y); started = true; }
+          else ctx.lineTo(x, y);
+        } else if (started) {
+          ctx.lineTo((i - 1) * SEGMENT_WIDTH, CANVAS_HEIGHT); started = false;
+        }
+      }
+      if (started) ctx.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT);
+      ctx.closePath(); ctx.fill();
+
+      ctx.strokeStyle = '#111111';
+      ctx.lineWidth = 3;
+      for (let i = 0; i < TERRAIN_SEGMENTS - 1; i++) {
+        const y1 = State.terrain[i];
+        const y2 = State.terrain[i + 1];
+        if (y1 !== null && y2 !== null) {
+          ctx.beginPath(); ctx.moveTo(i * SEGMENT_WIDTH, y1); ctx.lineTo((i + 1) * SEGMENT_WIDTH, y2); ctx.stroke();
+        }
+        if (y1 !== null && y2 === null) {
+          ctx.beginPath(); ctx.moveTo(i * SEGMENT_WIDTH, y1); ctx.lineTo(i * SEGMENT_WIDTH, CANVAS_HEIGHT); ctx.stroke();
+        }
+        if (y1 === null && y2 !== null) {
+          ctx.beginPath(); ctx.moveTo((i + 1) * SEGMENT_WIDTH, CANVAS_HEIGHT); ctx.lineTo((i + 1) * SEGMENT_WIDTH, y2); ctx.stroke();
+        }
+      }
+    }
+
+    function drawObjects() {
+      for (const obj of State.objects) {
+        const ox = obj.gx * GRID_SIZE;
+        const oy = obj.gy * GRID_SIZE;
+        ctx.strokeStyle = '#111111'; ctx.fillStyle = '#ffffff'; ctx.lineWidth = 2;
+        ctx.strokeRect(ox, oy, GRID_SIZE, GRID_SIZE);
+      }
+    }
+
+    function drawEditorGrid() {
+      ctx.strokeStyle = '#eef0f3'; ctx.lineWidth = 1;
+      for (let x = 0; x < CANVAS_WIDTH; x += GRID_SIZE) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, CANVAS_HEIGHT); ctx.stroke();
+      }
+
+      if (State.selectedTool === 'erase_ground' && State.editorHoverX >= 0) {
+        ctx.fillStyle = 'rgba(255, 51, 68, 0.15)';
+        ctx.strokeStyle = '#ff3344';
+        ctx.lineWidth = 2;
+        const segIdx = Math.floor(State.editorHoverX / SEGMENT_WIDTH);
+        const startX = Math.max(0, segIdx - 4) * SEGMENT_WIDTH;
+        const w = 9 * SEGMENT_WIDTH;
+        ctx.fillRect(startX, 0, w, CANVAS_HEIGHT);
+        ctx.strokeRect(startX, 0, w, CANVAS_HEIGHT);
+      }
+    }
+
+    function updateSmashBattle() {
+      if (State.gameEnded) return;
+
+      for (let i = State.hitboxes.length - 1; i >= 0; i--) {
+        const hb = State.hitboxes[i];
+        hb.life--;
+        const target = (hb.owner === State.p1 ? State.p2 : State.p1);
+        if (target && target.x + 14 > hb.x && target.x - 14 < hb.x + hb.w && target.y > hb.y && target.y - 48 < hb.y + hb.h) {
+          target.takeHit(hb);
+          State.hitboxes.splice(i, 1);
+          continue;
+        }
+        if (hb.life <= 0) State.hitboxes.splice(i, 1);
+      }
+
+      for (let i = State.bullets.length - 1; i >= 0; i--) {
+        const b = State.bullets[i];
+        if (b.homing) {
+          const opp = (b.owner === State.p1 ? State.p2 : State.p1);
+          if (opp) {
+            b.vx += Math.sign(opp.x - b.x) * 0.4;
+            b.vy += Math.sign(opp.y - 20 - b.y) * 0.4;
+          }
+        }
+        b.x += b.vx; b.y += b.vy;
+        const target = (b.owner === State.p1 ? State.p2 : State.p1);
+        if (target && Math.hypot(b.x - target.x, b.y - (target.y - 24)) < 22) {
+          target.takeHit({ damage: b.dmg, knockbackX: Math.sign(b.vx) * b.kb, knockbackY: -3, isMeteor: false });
+          State.bullets.splice(i, 1);
+          continue;
+        }
+        if (b.x < -40 || b.x > CANVAS_WIDTH + 40 || b.y > CANVAS_HEIGHT) State.bullets.splice(i, 1);
+      }
+
+      State.p1.update(State.p2);
+      State.p2.update(State.p1);
+
+      for (let i = State.particles.length - 1; i >= 0; i--) {
+        const p = State.particles[i]; p.update();
+        if (p.life <= 0) State.particles.splice(i, 1);
+      }
+
+      updateSmashHUD();
+    }
+
+    function drawSmashBattle() {
+      for (const b of State.bullets) {
+        ctx.fillStyle = '#111111';
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.homing ? 6 : 4, 0, Math.PI * 2); ctx.fill();
+      }
+      for (const tr of State.traps) {
+        ctx.strokeStyle = '#111111'; ctx.lineWidth = 2;
+        ctx.strokeRect(tr.x - 6, tr.y - 4, 12, 6);
+      }
+      State.p1.draw(ctx);
+      State.p2.draw(ctx);
+      for (const p of State.particles) p.draw(ctx);
+    }
+
+    function updateSmashHUD() {
+      if (!State.p1 || !State.p2) return;
+      document.getElementById('p1-percent').textContent = Math.round(State.p1.damage) + '%';
+      document.getElementById('p2-percent').textContent = Math.round(State.p2.damage) + '%';
+
+      const renderStocks = (id, count) => {
+        const b = document.getElementById(id); b.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+          const d = document.createElement('div'); d.className = 'stock-icon'; b.appendChild(d);
+        }
+      };
+      renderStocks('p1-stocks-box', State.p1.stocks);
+      renderStocks('p2-stocks-box', State.p2.stocks);
+    }
+
+    function startBattleMode() {
+      State.mode = 'battle';
+      State.gameEnded = false;
+      document.getElementById('result-overlay').style.display = 'none';
+
+      const allBeasts = [...BEASTS_DATABASE, ...LIMITED_BEASTS];
+      const beastP1 = allBeasts.find(b => b.id === UserData.currentBeastId) || BEASTS_DATABASE[0];
+      const skillP1 = SKILLS_DATABASE[UserData.currentSkillId] || SKILLS_DATABASE[0];
+      const beastP2 = allBeasts[Math.floor(Math.random() * allBeasts.length)];
+      const skillP2 = SKILLS_DATABASE[Math.floor(Math.random() * SKILLS_DATABASE.length)];
+
+      State.p1 = new BeastFighter(180, 240, beastP1, skillP1, false);
+      State.p2 = new BeastFighter(CANVAS_WIDTH - 180, 240, beastP2, skillP2, true);
+
+      document.getElementById('hud-p1-name').textContent = `${beastP1.name}`;
+      document.getElementById('hud-p2-name').textContent = `CPU (${UserData.cpuLevel})`;
+
+      State.bullets = []; State.hitboxes = []; State.traps = []; State.particles = [];
+
+      document.getElementById('current-mode-label').textContent = 'BATTLE';
+      document.getElementById('editor-controls').style.display = 'none';
+      document.getElementById('editor-tune-bar').style.display = 'none';
+      document.getElementById('editor-palette-box').style.display = 'none';
+      document.getElementById('battle-controls').style.display = 'flex';
+      document.getElementById('battle-hud').style.display = 'flex';
+      document.getElementById('virtual-gamepad').style.display = 'flex';
+
+      updateSmashHUD();
+    }
+
+    function returnToEditMode() {
+      State.mode = 'edit';
+      State.gameEnded = false;
+      document.getElementById('result-overlay').style.display = 'none';
+      document.getElementById('current-mode-label').textContent = 'EDITOR';
+      document.getElementById('editor-controls').style.display = 'flex';
+      document.getElementById('editor-tune-bar').style.display = 'flex';
+      document.getElementById('editor-palette-box').style.display = 'flex';
+      document.getElementById('battle-controls').style.display = 'none';
+      document.getElementById('battle-hud').style.display = 'none';
+      document.getElementById('virtual-gamepad').style.display = 'none';
+    }
+
+    function endBattle(title) {
+      State.gameEnded = true;
+      document.getElementById('result-title').textContent = 'GAME SET';
+      document.getElementById('result-desc').textContent = title;
+      document.getElementById('result-overlay').style.display = 'flex';
+
+      UserData.matches++;
+      if (title.includes('PLAYER 1')) {
+        UserData.wins++;
+        UserData.coins += 250;
+        showToast('勝利！+250 G 獲得！');
+      } else {
+        UserData.coins += 50;
+      }
+      UserData.save();
+      refreshCoinDisplays();
+    }
+
+    /* ==========================================================================
+       12. CPU難易度
+       ========================================================================== */
+    function cycleCpuLevel() {
+      if (UserData.cpuLevel === 'HARD') UserData.cpuLevel = 'EASY';
+      else if (UserData.cpuLevel === 'EASY') UserData.cpuLevel = 'NORMAL';
+      else UserData.cpuLevel = 'HARD';
+
+      UserData.save();
+      updateCpuUiButtons();
+      showToast(`CPU難易度: ${UserData.cpuLevel} に変更`);
+    }
+
+    function updateCpuUiButtons() {
+      const label = `CPU: ${UserData.cpuLevel}`;
+      document.getElementById('btn-toggle-cpu-level').textContent = `${UserData.cpuLevel} (${UserData.cpuLevel === 'EASY' ? 'LV.1' : (UserData.cpuLevel === 'NORMAL' ? 'LV.2' : 'LV.3')})`;
+      document.getElementById('btn-game-cpu-toggle').textContent = label;
+      const p2Title = document.getElementById('hud-p2-name');
+      if (p2Title) p2Title.textContent = `CPU (${UserData.cpuLevel})`;
+    }
+
+    document.getElementById('btn-toggle-cpu-level').addEventListener('click', cycleCpuLevel);
+    document.getElementById('btn-game-cpu-toggle').addEventListener('click', cycleCpuLevel);
+
+    /* ==========================================================================
+       13. エディタ操作（落ちる穴を確実に掘るツール）
+       ========================================================================== */
+    const paletteBar = document.getElementById('editor-palette-bar');
+
+    function renderPalette(category) {
+      State.currentCat = category;
+      paletteBar.innerHTML = '';
+      const list = OBJECT_CATEGORIES[category] || [];
+      list.forEach((obj) => {
+        const btn = document.createElement('button');
+        btn.className = 'palette-btn' + (State.selectedTool === obj.id ? ' active' : '');
+        btn.textContent = obj.name;
+        btn.dataset.tool = obj.id;
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          State.selectedTool = obj.id;
+          if (obj.id === 'erase_ground') showToast('穴掘りモード: タップして穴を開けます');
+        });
+        paletteBar.appendChild(btn);
+      });
+    }
+
+    document.querySelectorAll('.palette-tab-btn').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.palette-tab-btn').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderPalette(tab.dataset.cat);
+      });
+    });
+    renderPalette('terrain');
+
+    document.getElementById('btn-quick-dig').addEventListener('click', () => {
+      State.selectedTool = 'erase_ground';
+      document.querySelectorAll('.palette-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.tool === 'erase_ground');
+      });
+      showToast('落ちる穴掘りツール選択中');
+    });
+
+    function applyToolAt(canvasX, canvasY) {
+      const gx = Math.floor(canvasX / GRID_SIZE);
+      const gy = Math.floor(canvasY / GRID_SIZE);
+
+      if (State.selectedTool === 'erase_ground') {
+        const segIdx = Math.floor(canvasX / SEGMENT_WIDTH);
+        for (let s = Math.max(0, segIdx - 4); s <= Math.min(TERRAIN_SEGMENTS - 1, segIdx + 4); s++) {
+          State.terrain[s] = null;
+        }
+        showToast('落ちる穴を開けました');
+        return;
+      }
+
+      if (State.selectedTool === 'draw_ground') {
+        const segIdx = Math.floor(canvasX / SEGMENT_WIDTH);
+        for (let s = Math.max(0, segIdx - 2); s <= Math.min(TERRAIN_SEGMENTS - 1, segIdx + 2); s++) {
+          State.terrain[s] = Math.round(canvasY);
+        }
+        return;
+      }
+
+      if (State.selectedTool === 'eraser') {
+        const idx = State.objects.findIndex(o => o.gx === gx && o.gy === gy);
+        if (idx !== -1) State.objects.splice(idx, 1);
+        return;
+      }
+
+      if (gx < 0 || gx >= CANVAS_WIDTH / GRID_SIZE || gy < 0 || gy >= CANVAS_HEIGHT / GRID_SIZE) return;
+      const idx = State.objects.findIndex(o => o.gx === gx && o.gy === gy);
+      if (idx !== -1) State.objects[idx].type = State.selectedTool;
+      else State.objects.push({ type: State.selectedTool, gx, gy });
+    }
+
+    let isDrawingOnCanvas = false;
+    canvas.addEventListener('pointerdown', (e) => {
+      if (State.mode !== 'edit') return;
+      isDrawingOnCanvas = true;
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) * (CANVAS_WIDTH / rect.width);
+      const y = (e.clientY - rect.top) * (CANVAS_HEIGHT / rect.height);
+      applyToolAt(x, y);
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (State.mode !== 'edit') return;
+      const rect = canvas.getBoundingClientRect();
+      State.editorHoverX = (e.clientX - rect.left) * (CANVAS_WIDTH / rect.width);
+      if (isDrawingOnCanvas) {
+        const y = (e.clientY - rect.top) * (CANVAS_HEIGHT / rect.height);
+        applyToolAt(State.editorHoverX, y);
+      }
+    });
+
+    window.addEventListener('pointerup', () => isDrawingOnCanvas = false);
+
+    document.getElementById('tune-threshold').addEventListener('input', () => generateCityTerrain());
+    document.getElementById('tune-islands').addEventListener('input', () => generateCityTerrain());
+    document.getElementById('btn-invert-terrain').addEventListener('click', () => {
+      State.isInverted = !State.isInverted;
+      showToast(State.isInverted ? '明暗反転ON' : '明暗反転OFF');
+    });
+    document.getElementById('btn-clear-terrain').addEventListener('click', () => {
+      State.terrain = new Array(TERRAIN_SEGMENTS).fill(430);
+      State.objects = [];
+      showToast('平坦ステージにリセット');
+    });
+
+    /* ==========================================================================
+       14. ガチャ & ストア UI
+       ========================================================================== */
+    function refreshCoinDisplays() {
+      document.getElementById('home-coins').textContent = UserData.coins;
+      document.getElementById('store-coins').textContent = UserData.coins;
+      document.getElementById('gacha-coins').textContent = UserData.coins;
+    }
+
+    document.getElementById('tab-gacha-standard').addEventListener('click', () => {
+      State.currentGachaTab = 'standard';
+      document.getElementById('tab-gacha-standard').classList.add('active');
+      document.getElementById('tab-gacha-limited').classList.remove('active');
+      document.getElementById('gacha-banner-title').textContent = 'STANDARD BEAST GACHA';
+      document.getElementById('gacha-banner-sub').textContent = '100種類の動物ファイターがランダム排出！';
+    });
+
+    document.getElementById('tab-gacha-limited').addEventListener('click', () => {
+      State.currentGachaTab = 'limited';
+      document.getElementById('tab-gacha-limited').classList.add('active');
+      document.getElementById('tab-gacha-standard').classList.remove('active');
+      document.getElementById('gacha-banner-title').textContent = 'LIMITED EVENT: 四大幻神獣ガチャ';
+      document.getElementById('gacha-banner-sub').textContent = '白虎・鳳凰・海皇・邪竜の出現率超絶UP！';
+    });
+
+    function executeGachaPull(count) {
+      const isLimited = State.currentGachaTab === 'limited';
+      const cost = isLimited ? (count === 1 ? 150 : 1350) : (count === 1 ? 100 : 900);
+
+      if (UserData.coins < cost) {
+        showToast('コインが足りません！バトルに勝利して稼ごう');
+        return;
+      }
+
+      UserData.coins -= cost;
+      const results = [];
+
+      for (let i = 0; i < count; i++) {
+        let pulled;
+        if (isLimited && Math.random() < 0.35) {
+          pulled = LIMITED_BEASTS[Math.floor(Math.random() * LIMITED_BEASTS.length)];
+        } else {
+          pulled = BEASTS_DATABASE[Math.floor(Math.random() * BEASTS_DATABASE.length)];
+        }
+
+        const isNew = !UserData.ownedBeasts.includes(pulled.id);
+        if (isNew) UserData.ownedBeasts.push(pulled.id);
+        else UserData.coins += 40;
+        results.push({ beast: pulled, isNew });
+      }
+
+      UserData.save();
+      refreshCoinDisplays();
+      renderGachaResults(results);
+      showToast(`${count}連ガチャ完了！`);
+    }
+
+    document.getElementById('btn-gacha-single').addEventListener('click', () => executeGachaPull(1));
+    document.getElementById('btn-gacha-multi').addEventListener('click', () => executeGachaPull(10));
+
+    function renderGachaResults(results) {
+      const grid = document.getElementById('gacha-result-grid');
+      grid.innerHTML = '';
+      results.forEach(r => {
+        const b = r.beast;
+        const card = document.createElement('div');
+        card.className = 'store-card' + (b.isLimited ? ' limited' : '');
+        card.innerHTML = `
+          <div>
+            <div style="font-size:9px; font-weight:800; color:${b.isLimited ? '#b8860b' : '#666'};">${b.isLimited ? '[限定神獣]' : (r.isNew ? '[NEW!]' : '[重複+40G]')}</div>
+            <div class="store-item-title">${escapeHtml(b.name)}</div>
+            <div class="store-item-desc">SP1: ${b.sp1Name}</div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderSkillsStore() {
+      const grid = document.getElementById('skills-store-grid');
+      grid.innerHTML = '';
+      refreshCoinDisplays();
+
+      SKILLS_DATABASE.forEach(sk => {
+        const isOwned = UserData.ownedSkills.includes(sk.id);
+        const isEquipped = UserData.currentSkillId === sk.id;
+        const card = document.createElement('div');
+        card.className = 'store-card' + (isEquipped ? ' equipped' : '');
+        card.innerHTML = `
+          <div>
+            <div class="store-item-title">${escapeHtml(sk.name)}</div>
+            <div style="font-size:9px; font-weight:800; color:var(--text-muted);">[${sk.type}]</div>
+            <div class="store-item-desc">${escapeHtml(sk.desc)}</div>
+          </div>
+          <div>
+            <div class="store-item-meta"><span>威力:${sk.damage}</span><span>吹飛:${sk.knockback}</span></div>
+            <button class="btn btn-primary" style="width:100%; margin-top:4px;" id="btn-sk-${sk.id}">
+              ${isEquipped ? '装備中' : (isOwned ? '装備する' : `${sk.price} G`)}
+            </button>
+          </div>
+        `;
+
+        card.querySelector(`#btn-sk-${sk.id}`).addEventListener('click', () => {
+          if (isEquipped) return;
+          if (isOwned) {
+            UserData.currentSkillId = sk.id;
+            UserData.save();
+            showToast(`技 [${sk.name}] をカスタム枠に装備`);
+            renderSkillsStore();
+          } else {
+            if (UserData.coins >= sk.price) {
+              UserData.coins -= sk.price;
+              UserData.ownedSkills.push(sk.id);
+              UserData.currentSkillId = sk.id;
+              UserData.save();
+              showToast(`技 [${sk.name}] を購入＆装備！`);
+              renderSkillsStore();
+            } else {
+              showToast('コインが足りません！');
+            }
+          }
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    function renderBeastsCollection() {
+      const grid = document.getElementById('beasts-grid');
+      grid.innerHTML = '';
+      const allList = [...BEASTS_DATABASE, ...LIMITED_BEASTS];
+      const curBeast = allList.find(b => b.id === UserData.currentBeastId) || BEASTS_DATABASE[0];
+      document.getElementById('current-beast-type').textContent = `${curBeast.name} [${curBeast.type}]`;
+
+      UserData.ownedBeasts.forEach(id => {
+        const b = allList.find(item => item.id === id);
+        if (!b) return;
+        const isSelected = UserData.currentBeastId === b.id;
+        const card = document.createElement('div');
+        card.className = 'store-card' + (isSelected ? ' equipped' : '') + (b.isLimited ? ' limited' : '');
+        card.innerHTML = `
+          <div>
+            <div style="font-size:8px; font-weight:800; color:${b.isLimited ? '#b8860b' : '#666'};">${b.isLimited ? '[期間限定]' : '[通常]'}</div>
+            <div class="store-item-title">${escapeHtml(b.name)}</div>
+            <div class="store-item-desc" style="font-size:7px;">SP1: ${b.sp1Name}<br>SP2: ${b.sp2Name}</div>
+          </div>
+          <button class="btn btn-primary" style="width:100%; margin-top:4px;">
+            ${isSelected ? '出撃中' : '出撃する'}
+          </button>
+        `;
+        card.querySelector('button').addEventListener('click', () => {
+          UserData.currentBeastId = b.id;
+          UserData.save();
+          showToast(`出撃ビーストを [${b.name}] に変更！`);
+          renderBeastsCollection();
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    /* ==========================================================================
+       15. 画面遷移
+       ========================================================================== */
+    function switchView(viewName) {
+      State.view = viewName;
+      document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active-view'));
+      if (viewName === 'home') document.getElementById('home-view').classList.add('active-view');
+      if (viewName === 'game') document.getElementById('game-view').classList.add('active-view');
+      if (viewName === 'gacha') { document.getElementById('gacha-view').classList.add('active-view'); refreshCoinDisplays(); }
+      if (viewName === 'store') { document.getElementById('store-view').classList.add('active-view'); renderSkillsStore(); }
+      if (viewName === 'beasts') { document.getElementById('beasts-view').classList.add('active-view'); renderBeastsCollection(); }
+      if (viewName === 'world') { document.getElementById('world-view').classList.add('active-view'); loadWorldCourses(); }
+      if (viewName === 'mypage') { document.getElementById('mypage-view').classList.add('active-view'); loadMyCourses(); }
+    }
+
+    document.getElementById('btn-goto-editor').addEventListener('click', () => {
+      if (!State.terrain || State.terrain.length === 0) generateCityTerrain();
+      returnToEditMode();
+      switchView('game');
+    });
+    document.getElementById('btn-goto-gacha').addEventListener('click', () => switchView('gacha'));
+    document.getElementById('btn-goto-store').addEventListener('click', () => switchView('store'));
+    document.getElementById('btn-goto-beasts').addEventListener('click', () => switchView('beasts'));
+    document.getElementById('btn-goto-world').addEventListener('click', () => switchView('world'));
+    document.getElementById('btn-goto-mypage').addEventListener('click', () => switchView('mypage'));
+
+    document.getElementById('btn-back-home').addEventListener('click', () => switchView('home'));
+    document.getElementById('btn-gacha-back-home').addEventListener('click', () => switchView('home'));
+    document.getElementById('btn-store-back-home').addEventListener('click', () => switchView('home'));
+    document.getElementById('btn-beasts-back-home').addEventListener('click', () => switchView('home'));
+    document.getElementById('btn-world-back-home').addEventListener('click', () => switchView('home'));
+    document.getElementById('btn-mypage-back-home').addEventListener('click', () => switchView('home'));
+
+    document.getElementById('btn-start-battle').addEventListener('click', startBattleMode);
+    document.getElementById('btn-return-edit').addEventListener('click', returnToEditMode);
+    document.getElementById('btn-restart-battle').addEventListener('click', startBattleMode);
+    document.getElementById('btn-result-action').addEventListener('click', startBattleMode);
+
+    /* ==========================================================================
+       16. 保存モーダル & GAS通信
+       ========================================================================== */
+    const saveModal = document.getElementById('save-modal');
+    document.getElementById('btn-open-save-modal').addEventListener('click', () => {
+      document.getElementById('save-author').value = UserData.name;
+      saveModal.style.display = 'flex';
+    });
+    document.getElementById('btn-cancel-save').addEventListener('click', () => saveModal.style.display = 'none');
+
+    document.getElementById('btn-confirm-save').addEventListener('click', async () => {
+      const title = document.getElementById('save-title').value.trim() || 'UNTITLED';
+      const author = document.getElementById('save-author').value.trim() || UserData.name;
+      UserData.name = author; UserData.save();
+
+      const coursePayload = { action: 'save', title, author, terrain: State.terrain, objects: State.objects };
+      let myCourses = JSON.parse(localStorage.getItem('pf_my_courses') || '[]');
+      if (myCourses.length >= 25) myCourses.pop();
+      myCourses.unshift({ ...coursePayload, createdAt: new Date().toLocaleDateString() });
+      localStorage.setItem('pf_my_courses', JSON.stringify(myCourses));
+
+      saveModal.style.display = 'none';
+      showToast('スプレッドシートへ送信中...');
+
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(coursePayload)
+        });
+        const result = await res.json();
+        if (result.status === 'success') showToast('スプレッドシートに保存しました！');
+        else showToast('端末内にバックアップ保存しました');
+      } catch (err) {
+        showToast('通信エラー: 端末内に保存しました');
+      }
+    });
+
+    function loadMyCourses() {
+      const container = document.getElementById('my-course-list');
+      const myCourses = JSON.parse(localStorage.getItem('pf_my_courses') || '[]');
+      container.innerHTML = '';
+      if (myCourses.length === 0) {
+        container.innerHTML = '<div style="padding:14px; font-size:11px; color:var(--text-muted);">コースはまだありません。</div>';
+        return;
+      }
+      myCourses.forEach((c, idx) => {
+        const card = document.createElement('div');
+        card.className = 'store-card';
+        card.innerHTML = `
+          <div><div class="store-item-title">${escapeHtml(c.title)}</div><div class="store-item-meta">${c.createdAt || ''}</div></div>
+          <div style="display:flex; gap:4px; margin-top:6px;">
+            <button class="btn btn-primary btn-play" style="flex:1;">PLAY</button>
+            <button class="btn btn-danger btn-del">削除</button>
+          </div>
+        `;
+        card.querySelector('.btn-play').addEventListener('click', () => loadCourseData(c));
+        card.querySelector('.btn-del').addEventListener('click', () => {
+          myCourses.splice(idx, 1);
+          localStorage.setItem('pf_my_courses', JSON.stringify(myCourses));
+          loadMyCourses();
+        });
+        container.appendChild(card);
+      });
+    }
+
+    async function loadWorldCourses() {
+      const container = document.getElementById('world-course-list');
+      container.innerHTML = '<div style="padding:14px; font-size:11px; color:var(--text-muted);">コースを取得中...</div>';
+      let courses = [];
+      try {
+        const res = await fetch(GAS_API_URL + '?action=list', { method: 'GET', redirect: 'follow' });
+        const data = await res.json();
+        if (data.status === 'success' && data.courses && data.courses.length > 0) courses = data.courses;
+      } catch (e) {}
+
+      if (courses.length === 0) courses = JSON.parse(localStorage.getItem('pf_my_courses') || '[]');
+      if (courses.length === 0) generateCityTerrain();
+
+      container.innerHTML = '';
+      courses.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'store-card';
+        card.innerHTML = `
+          <div><div class="store-item-title">${escapeHtml(c.title)}</div><div class="store-item-meta">BY: ${escapeHtml(c.author)}</div></div>
+          <button class="btn btn-primary btn-play" style="margin-top:6px;">PLAY</button>
+        `;
+        card.querySelector('.btn-play').addEventListener('click', () => loadCourseData(c));
+        container.appendChild(card);
+      });
+    }
+
+    document.getElementById('btn-refresh-world').addEventListener('click', loadWorldCourses);
+
+    function loadCourseData(course) {
+      try {
+        State.terrain = typeof course.terrain === 'string' ? JSON.parse(course.terrain) : course.terrain;
+        State.objects = typeof course.objects === 'string' ? JSON.parse(course.objects) : course.objects;
+        switchView('game');
+        startBattleMode();
+        showToast('コース読み込み完了: ' + course.title);
+      } catch (err) {
+        showToast('読み込み失敗');
+      }
+    }
+
+    // 写真アップロード
+    const photoUploadInput = document.getElementById('photo-upload');
+    document.getElementById('btn-trigger-upload').addEventListener('click', () => photoUploadInput.click());
+    photoUploadInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const off = document.createElement('canvas');
+          const offCtx = off.getContext('2d');
+          off.width = TERRAIN_SEGMENTS; off.height = 100;
+          offCtx.drawImage(img, 0, 0, TERRAIN_SEGMENTS, 100);
+          const data = offCtx.getImageData(0, 0, TERRAIN_SEGMENTS, 100).data;
+          const tr = [];
+          for (let x = 0; x < TERRAIN_SEGMENTS; x++) {
+            let lum = 0;
+            for (let y = 10; y < 90; y++) {
+              const idx = (y * TERRAIN_SEGMENTS + x) * 4;
+              lum += (0.299 * data[idx] + 0.587 * data[idx+1] + 0.114 * data[idx+2]);
+            }
+            lum /= 80;
+            if (lum < 38) tr.push(null);
+            else tr.push(Math.round(200 + (1 - lum / 255) * 280));
+          }
+          State.terrain = tr;
+          showToast('写真から高低差ステージを生成！');
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+    function triggerHitstop(f) { State.hitstop = f; }
+    function triggerScreenShake(s) { State.screenShake = s; }
+
+    function createSplatter(x, y, color, count = 10) {
+      for (let i = 0; i < count; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const spd = 1.2 + Math.random() * 5;
+        State.particles.push(new Particle(x, y, Math.cos(ang) * spd, Math.sin(ang) * spd - 2, color));
+      }
+    }
+
+    class Particle {
+      constructor(x, y, vx, vy, color) {
+        this.x = x; this.y = y; this.vx = vx; this.vy = vy;
+        this.color = color; this.life = 1.0;
+        this.decay = 0.04 + Math.random() * 0.03;
+        this.size = 2.5 + Math.random() * 3;
+      }
+      update() { this.x += this.vx; this.y += this.vy; this.vy += 0.2; this.life -= this.decay; }
+      draw(ctx) {
+        ctx.save(); ctx.globalAlpha = Math.max(0, this.life);
+        ctx.fillStyle = this.color; ctx.fillRect(this.x, this.y, this.size, this.size);
+        ctx.restore();
+      }
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t));
+    }
+
+    /* ==========================================================================
+       17. 初期化
+       ========================================================================== */
+    generateCityTerrain();
+    refreshCoinDisplays();
+    updateCpuUiButtons();
+    render();
+  </script>
+</body>
+</html>
